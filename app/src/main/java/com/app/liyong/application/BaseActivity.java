@@ -1,0 +1,41 @@
+package com.app.liyong.application;
+
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+
+public abstract class BaseActivity extends AppCompatActivity {
+
+    protected abstract int getContentViewId();
+
+    protected abstract int getFragmentContentId();
+
+    protected void addFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().
+                    replace(getFragmentContentId(),
+                            fragment, fragment.getClass().getSimpleName())
+                    .addToBackStack(fragment.getClass().getSimpleName())
+                    .commitAllowingStateLoss();
+        }
+    }
+    protected void  removeFragment(){
+        if (getSupportFragmentManager().getBackStackEntryCount()>1){
+            getSupportFragmentManager().popBackStack();
+        }else{
+            finish();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (KeyEvent.KEYCODE_BREAK==keyCode){
+            if (getSupportFragmentManager().getBackStackEntryCount()==1){
+                finish();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+}
